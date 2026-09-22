@@ -14,8 +14,6 @@ export default function Home() {
   return (
     <>
     <ScrollHero/>
-    <Hero/>
-    <FeatureShowcase/>
      <TrustedBy/>
      <CoachScrollReveal/>
 <ProblemSection/>
