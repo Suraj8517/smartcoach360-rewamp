@@ -504,7 +504,9 @@ const SCROLL_LENGTH = 4;
 
   return (
     <>
+     {/* ── features ── 
     <DetailedFeatures/>
+    */}
     <div ref={containerRef} className="hidden lg:block relative bg-black pt-16 "  style={{ height: `${SCROLL_LENGTH * 150}vh` }}>
 
       {/* ── Hero text ── */}

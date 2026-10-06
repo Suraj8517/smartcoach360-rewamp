@@ -3,6 +3,8 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import logo from "../../../assets/smartcoach360.svg"
 import bgVideo from "../../../assets/upgrade/hero/bgvideo.mp4"
+import Title1Lines from './utils/title1Lines';
+import Words from './utils/words';
 gsap.registerPlugin(ScrollTrigger);
 
 /* ---------------------------------------------------------------------- */
@@ -34,9 +36,9 @@ const CARD_DATA = [
 const TAU = Math.PI * 2;
 
 // Palette
-const PURPLE = '#c9a5f2'; // the hero's final background + the box's bar
+const PURPLE = '#DCC6EA'; // the hero's final background + the box's bar
 const INK = '#150a24';
-const PAPER = '#fafaf9'; // the light page revealed under the purple
+const PAPER = '#FFFFFF'; // the light page revealed under the purple
 const CREAM = '#f3ede1'; // the hero's starting background
 // Highlight for the last word ("Growth") inside the photo (Stage 8).
 // Uses the brand purple; swap for a deeper/lighter shade if it needs more
@@ -92,24 +94,13 @@ const OPP_IMAGES = [
 const TITLE1_CLASS =
   'absolute left-[4%] right-[4%] top-1/2 font-[Inter Tight,sans-serif] text-[clamp(2rem,8vw,8rem)] font-medium leading-[1.3] tracking-tight sm:left-[2.5%] sm:right-[2.5%] sm:leading-[0.94]';
 
-function Title1Lines() {
-  return (
-    <>
-      <Words text="Outpace everyone with" />
-      <br />
-      <Words text="the best platform" />
-      <span className="block text-right">
-        <Words text="for coaches" />
-      </span>
-    </>
-  );
-}
+
 
 /* ---------------------------------------------------------------------- */
 /* Word-by-word text                                                      */
 /* ---------------------------------------------------------------------- */
 
-// Word animation timings (timeline units — 1 unit ≈ 65–90vh of scroll).
+// Word animation timings (timeline units — 1 unit ≈ 45–60vh of scroll).
 // Each headline's word stagger is chosen so that
 //   (words - 1) * stagger + duration
 // fits inside the stage that plays it.
@@ -126,17 +117,7 @@ const T3_IN_STAGGER = 0.15; // title 3: 3 words  -> 0.3 + 0.7 = 1.0
 //
 // Usage: <h2 ref={ref}><Words text="Some headline" /></h2>
 // Then:  gsap.utils.toArray('[data-word]', ref.current)
-function Words({ text, cls = 'mt-3' }) {
-  const words = text.split(' ');
-  return words.map((word, i) => (
-    <Fragment key={i}>
-      <span data-word className={`inline-block will-change-transform ${cls}`}>
-        {word}
-      </span>
-      {i < words.length - 1 ? ' ' : null}
-    </Fragment>
-  ));
-}
+
 
 const getWords = (el) => gsap.utils.toArray('[data-word]', el);
 
@@ -569,26 +550,26 @@ export default function ScrollHero() {
           onUpdate: applyLayout,
         });
 
-        // Stage 1 (0–1.2): hold on the full-bleed video + title 1 — this is the start state.
+        // Stage 1 (0–0.5): short hold on the full-bleed video + title 1 — this is the start state.
 
-        // Stage 2a (1.2–2.4): ONLY the video scales down. The headline does not move
+        // Stage 2a (0.5–1.7): ONLY the video scales down. The headline does not move
         // or fade. Because the white copy is clipped to the video's rectangle (see
         // applyLayout), the letters still over the video stay white while the
         // parts poking out over the page show the black copy underneath.
         tl.to(
           video,
           { w: vw * VIDEO_SHRINK_W, h: vh * VIDEO_SHRINK_H, radius: 14, duration: 1.2 },
-          1.2
-        ).to(scrollHintRef.current, { opacity: 0, duration: 0.6 }, 1.2);
+          0.5
+        ).to(scrollHintRef.current, { opacity: 0, duration: 0.6 }, 0.5);
 
-        // Hold (2.4–2.9): the two-tone headline sits still so it can be read.
+        // Hold (1.7–2.3): the two-tone headline sits still so it can be read.
 
         // Everything below used to start at 1.2; it now starts `shift` later,
-        // after the shrink and the hold.
-        const tOut = 2.9; // headline begins to fade out, collage begins to arrive
+        // after the shrink and the (shortened) hold.
+        const tOut = 2.3; // headline begins to fade out, collage begins to arrive
         const shift = tOut - 1.2;
 
-        // Stage 2b (2.9–3.8): the headline's words fade out one after another
+        // Stage 2b: the headline's words fade out one after another
         // (8 words: 7 * 0.06 + 0.5 ≈ 0.92) in both layers, together with the dark
         // overlay, so the small video card isn't left dimmed. The collage tiles
         // start sliding in from the screen edges.
@@ -622,7 +603,7 @@ export default function ScrollHero() {
           1.3 + shift
         );
 
-        // Stage 2c (4.0–5.6): the video keeps receding, continuing smoothly into its
+        // Stage 2c: the video keeps receding, continuing smoothly into its
         // collage slot (top-left) so it blends into the scatter.
         tl.to(
           video,
@@ -637,24 +618,15 @@ export default function ScrollHero() {
           2.3 + shift
         );
 
-        // Orbit (2.9–orbitEnd): the whole collage orbits the screen centre. The
-        // angle eases in and out, so the swing starts gently and coasts to a
-        // complete stop exactly on the scatter layout (whole turns => same
-        // spot). `keepInside` is released in the last 0.8s so tiles glide back
-        // to their exact layout positions instead of snapping.
-        //
-        // ORBIT_DURATION controls how much scroll the spin itself needs — it
-        // used to be 6.5, which made this one stage a huge chunk of the total
-        // scroll. Every later stage below is anchored off `orbitEnd` with the
-        // SAME offsets it always had, so shortening the orbit only tightens
-        // the orbit itself (and the logo/background handoff right after it) —
-        // it doesn't squeeze stages 5–8's own pacing.
-        const ORBIT_DURATION = 3.2; // was 6.5 — this is the main scroll-length cut
-        const orbitEnd = 1.2 + shift + ORBIT_DURATION;
-        tl.to(orbit, { angle: TAU * ORBIT_TURNS, duration: ORBIT_DURATION, ease: 'sine.inOut' }, 1.2 + shift).to(
+        // Orbit: the whole collage orbits the screen centre. The angle
+        // eases in and out, so the swing starts gently and coasts to a complete
+        // stop exactly on the scatter layout (whole turns => same spot).
+        // `keepInside` is released in the last 0.8s so tiles glide back to their
+        // exact layout positions instead of snapping.
+        tl.to(orbit, { angle: TAU * ORBIT_TURNS, duration: 6.5, ease: 'sine.inOut' }, 1.2 + shift).to(
           orbit,
           { keepInside: 0, duration: 0.8 },
-          orbitEnd - 0.8
+          6.9 + shift
         );
 
         // Stage 3: the logo sits behind the video, so it grows in as the video
@@ -662,18 +634,14 @@ export default function ScrollHero() {
         tl.to(logoWrapRef.current, { opacity: 1, scale: 1, duration: 1.6 }, 2.3 + shift);
 
         // Stage 4: the background eases into purple, and the logo fades out.
-        // Anchored to the logo's own grow-in finishing, plus a short hold —
-        // NOT to the orbit length — so shortening the orbit can never make the
-        // logo start fading before it's actually finished growing in.
-        const logoFadeStart = 2.3 + shift + 1.6 + 0.3; // logoGrowStart + logoGrowDuration + hold
-        tl.to(bgColorRef.current, { backgroundColor: PURPLE, duration: 1.3 }, logoFadeStart).to(
+        tl.to(bgColorRef.current, { backgroundColor: PURPLE, duration: 1.8 }, 6.1 + shift).to(
           logoWrapRef.current,
-          { opacity: 0, scale: 0.85, duration: 0.8 },
-          logoFadeStart
+          { opacity: 0, scale: 0.85, duration: 1.1 },
+          6.1 + shift
         );
 
-        // Stage 5 (orbitEnd–+2.1): the orbit has come to rest, so tiles settle to
-        // their sides while the second headline reveals itself word by word
+        // Stage 5: the orbit has come to rest, so tiles settle to their
+        // sides while the second headline reveals itself word by word
         // (17 words: 16 * 0.07 + 0.6 ≈ 1.7).
         tl.to(
           tiles,
@@ -684,7 +652,7 @@ export default function ScrollHero() {
             duration: 1.6,
             stagger: 0.04,
           },
-          orbitEnd
+          7.7 + shift
         ).to(
           words2,
           {
@@ -694,14 +662,14 @@ export default function ScrollHero() {
             stagger: T2_IN_STAGGER,
             ease: 'power2.out',
           },
-          orbitEnd + 0.4
+          8.1 + shift
         );
 
-        // Hold: the complete second headline sits still.
+        // Hold: the complete second headline sits still (shortened).
 
-        // Stage 6: tiles slide out to the left/right edges and fade, the second
-        // headline's words fade in reading order, then the closing line fades
-        // in word by word.
+        // Stage 6: tiles slide out to the left/right edges and fade,
+        // the second headline's words fade in reading order, then the closing
+        // line fades in word by word.
         tl.to(
           tiles,
           {
@@ -711,7 +679,7 @@ export default function ScrollHero() {
             stagger: 0.02,
             ease: 'power2.in',
           },
-          orbitEnd + 3.7
+          10.6 + shift
         )
           .to(
             words2,
@@ -722,7 +690,7 @@ export default function ScrollHero() {
               stagger: T2_OUT_STAGGER,
               ease: 'power1.in',
             },
-            orbitEnd + 3.7
+            10.6 + shift
           )
           .to(
             words3,
@@ -733,7 +701,7 @@ export default function ScrollHero() {
               stagger: T3_IN_STAGGER,
               ease: 'power2.out',
             },
-            orbitEnd + 4.2
+            11.1 + shift
           );
 
         /* ------------------------------------------------------------------ */
@@ -745,7 +713,7 @@ export default function ScrollHero() {
         // the first line, and on further scroll all the way up to the top.
         //
         // exitAt: a short beat after "#1 Platform for Coaches" has fully appeared.
-        const exitAt = orbitEnd + 5.8; // was 13.5 + shift, same relative offset from orbit's end
+        const exitAt = 12.4 + shift;
 
         tl.to(words3, { opacity: 0, y: -20, duration: 0.5, stagger: 0.05, ease: 'power1.in' }, exitAt)
           .to(stage, { yPercent: -100, duration: 2.6, ease: 'none' }, exitAt)
@@ -781,8 +749,8 @@ export default function ScrollHero() {
         //    it, so the letters change colour exactly at the box edge.
         // 3. the 3-line text block slides up one half-line per new word so the
         //    visible lines stay vertically centred.
-        const s8 = exitAt + 7.0;
-        const STEP = 1.4; // scroll distance between one word/photo and the next
+        const s8 = exitAt + 6.6;
+        const STEP = 1.0; // scroll distance between one word/photo and the next
         const first = s8 + 1.3; // when the first word appears
         const reveal = (layers, at) =>
           layers.forEach((w) =>
@@ -811,15 +779,15 @@ export default function ScrollHero() {
           first + STEP * 2 - 0.2
         );
 
-        // End hold: the finished box stays on screen before the page scrolls on.
-        tl.to({}, { duration: 1 }, first + STEP * 3 + 0.6);
+        // End hold: the finished box stays on screen briefly before the page scrolls on.
+        tl.to({}, { duration: 0.4 }, first + STEP * 3 + 0.6);
 
         ScrollTrigger.create({
           animation: tl,
           trigger: rootRef.current,
           start: 'top top',
           end: 'bottom bottom',
-          scrub: 1.2, // a little more smoothing = softer, less "steppy" scroll response
+          scrub: 0.6, // snappier response (was 1.2)
         });
 
         // Slow float: each tile's outer wrapper traces a small circle, independent
@@ -883,12 +851,12 @@ export default function ScrollHero() {
   return (
     <>
       {/* Scroll-distance wrapper — height controls how long the sequence takes
-          to play out. The timeline is now ≈ 26 units long (down from ≈ 29.3 —
-          shortening the orbit stage cut about 3.3 units of scroll), so the
-          wrapper height below is scaled down to match.
+          to play out. The timeline is now ≈ 24 units long, so the wrapper is
+          shorter than before (was 1450vh / 1880vh). If it feels rushed, raise
+          these values (e.g. sm:h-[1300vh]) before touching the timeline.
           Shorter on mobile so the same beats land in less scroll distance on a
           small screen. */}
-      <div ref={rootRef} className="relative h-[1300vh] sm:h-[1680vh]">
+      <div ref={rootRef} className="relative h-[850vh] sm:h-[1100vh]">
         <section className="sticky top-0 h-screen w-full overflow-hidden">
           {/* LAYER 0 — the light page. It sits under everything and is revealed
               when the purple stage slides up. */}

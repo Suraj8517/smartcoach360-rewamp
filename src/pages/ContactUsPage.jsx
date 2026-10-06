@@ -3,7 +3,7 @@ import ContactUsForm from '../components/Contactus/ContactUsForm'
 import avatar1 from '../assets/crm/avatar/avatar3.png'
 import vmax from "../assets/crm/logos/vmax.png";
 import fmc from "../assets/crm/logos/fitmomclub.jpg";
-import LK from "../assets/crm/logos/lk.jpg";
+import LK from "../assets/crm/logos/lk.png";
 import mindfully from "../assets/crm/logos/yours-mindfully.png";
 import fkc from "../assets/crm/logos/fitkid.png";
 import fdc from "../assets/crm/logos/fitdad.png";

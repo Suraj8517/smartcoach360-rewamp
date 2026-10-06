@@ -1,21 +1,23 @@
 import vmax from "../../assets/crm/logos/vmax.png";
 import fmc from "../../assets/crm/logos/fitmomclub.jpg";
-import LK from "../../assets/crm/logos/lk.jpg";
+import LK from "../../assets/crm/logos/lk.png";
 import mindfully from "../../assets/crm/logos/yours-mindfully.png";
 import fkc from "../../assets/crm/logos/fitkid.png";
 import fdc from "../../assets/crm/logos/fitdad.png";
 import miracle from "../../assets/crm/logos/miracle.png";
+import family from "../../assets/crm/logos/family.png";
+
 import { useRef } from "react";
 import { motion } from "framer-motion";
 
 const logos = [
+  { alt: "family", className: "h-15", src: family },
   { alt: "VMax Healthtech", className: "h-20", src: vmax },
   { alt: "FitMom Club", className: "h-13", src: fmc },
   { alt: "LK", className: "h-[74px]", src: LK },
   { alt: "FitDad Club", className: "h-13", src: fdc },
   { alt: "Yours Mindfully", className: "h-15", src: mindfully },
   { alt: "FitKid Club", className: "h-15", src: fkc },
-  { alt: "Miracle", className: "h-15", src: miracle },
 ];
 
 const LogoItem = ({ alt, className, src }) => (
