@@ -8,10 +8,11 @@ function JoinNow({
   color = "text-white",
   circleBg = "bg-white",
   circleColor = "text-primary-white",
+  url
 }) {
   console.log("JoinNowButton props:", { text, bg, color, circleBg, circleColor });
   return (
-    <Link to={"/contact-us"}
+    <Link to={url}
       className={`group inline-flex items-center gap-4 rounded-full ${bg} py-2 pl-6 pr-2 font-inter text-base font-medium ${color} transition-opacity hover:opacity-90`}
     >
       <span>{text}</span>

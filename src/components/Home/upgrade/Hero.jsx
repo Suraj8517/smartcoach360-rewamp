@@ -48,7 +48,7 @@ const HIGHLIGHT = PURPLE;
 // Whole turns the collage makes around the centre while the logo grows in.
 // Keep this a WHOLE number: the orbit then lands exactly back on the scatter
 // layout, so the next stage starts from rest with no jump and no spin.
-const ORBIT_TURNS = 1;
+const ORBIT_TURNS = .5;
 
 // Stage 5: how far the tiles settle relative to their scatter layout
 // (1 = same place, >1 = slightly further out toward the sides, <1 = toward the
@@ -891,7 +891,7 @@ export default function ScrollHero() {
                   />
                   {/* Dark overlay — sits between the video and the headline.
                       Change bg-black/40 to make it lighter (/30) or darker (/60). */}
-                  <div ref={overlayRef} className="pointer-events-none absolute inset-0 bg-black/40" />
+                  <div ref={overlayRef} className="pointer-events-none absolute inset-0 bg-black/60" />
                 </div>
               </div>
 

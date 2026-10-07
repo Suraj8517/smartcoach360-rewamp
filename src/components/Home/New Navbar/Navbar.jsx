@@ -9,6 +9,7 @@ const DEMO_URL = import.meta.env.VITE_CALENDLY_LINK;
 const VIOLET = "#6E0ACE";
 const LILAC = "#C9A6FF";
 const LILAC_SOFT = "#E3CFFF";
+const INK = "#1B0533";
 
 const HIDE_WORDMARK_AT = 80;
 
@@ -20,13 +21,12 @@ const icon = (d) => (
   </svg>
 );
 
-const MAIN_LINKS = [
-  { label: "Solutions", route: "/solutions" },
-  { label: "Integrations", route: "/integrations" },
-  { label: "Pricing", route: "/pricing" },
-  { label: "Compare", route: "/comparison" },
-  { label: "Resources", submenu: true },
-  { label: "About us", route: "/about-us" },
+const NAV_LINKS = [
+  { label: "Solutions", route: "/solutions", desc: "What smartcoach360 does for coaches" },
+  { label: "Integrations", route: "/integrations", desc: "Connect the tools you already use" },
+  { label: "Pricing", route: "/pricing", desc: "Plans for every coaching business" },
+  { label: "Compare", route: "/comparison", desc: "See how we stack up" },
+  { label: "About us", route: "/about-us", desc: "The team behind the platform" },
 ];
 
 const RESOURCES = [
@@ -36,7 +36,6 @@ const RESOURCES = [
 ];
 
 const on = (path, route) => path === route || path.startsWith(route + "/");
-const resourcesOn = (path) => RESOURCES.some((r) => on(path, r.route));
 
 const Arrow = ({ size = 16 }) => (
   <svg width={size} height={size} viewBox="0 0 16 16" fill="none" aria-hidden="true">
@@ -44,165 +43,173 @@ const Arrow = ({ size = 16 }) => (
   </svg>
 );
 
-const focus =
-  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#1B0533] focus-visible:ring-offset-[#D8BCFF]";
+// focus rings: one for the dark panel, one for the lilac CTA card
+const focusDark =
+  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A6FF] focus-visible:ring-offset-2 focus-visible:ring-offset-[#1B0533]";
+const focusLight =
+  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1B0533] focus-visible:ring-offset-2 focus-visible:ring-offset-[#E3CFFF]";
 
 /* ─── Menu panel ───────────────────────────────────────────────────────────── */
-/* A floating card inset from the screen edge. Every row is a flexed slice of
-   the card's height, so all links and the footer are on screen at once with
-   no scrolling. Resources borrows height from its siblings when expanded.    */
+/* A near-full-screen dark sheet that unrolls from the top, under the floating
+   header pills (the Menu button turns into Close, so the same button opens
+   and closes it).
+   Desktop: big page links on the left, Resources + a demo card on the right.
+   Mobile:  the same content stacked, scrollable.                              */
 
-function MenuPanel({ open, onClose, path, closeRef }) {
-  const [resOpen, setResOpen] = useState(false);
-
-  useEffect(() => { if (!open) setResOpen(false); }, [open]);
-
-  // staggered entrance, replays each time the panel opens
+function MenuPanel({ open, onClose, path, firstLinkRef }) {
+  // staggered entrance, replays every time the panel opens.
+  // `backwards` (not `both`) so hover opacity changes still work afterwards.
   const enter = (i) =>
-    open ? { animation: `menuIn 600ms cubic-bezier(0.2, 0.7, 0.2, 1) ${140 + i * 55}ms both` } : undefined;
+    open ? { animation: `menuIn 650ms cubic-bezier(0.2, 0.7, 0.2, 1) ${260 + i * 60}ms backwards` } : undefined;
+
+  const tab = open ? 0 : -1;
 
   return (
     <>
       <style>{`
-        @keyframes menuIn { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
-        @media (prefers-reduced-motion: reduce) { .menu-anim { animation: none !important; } }
+        @keyframes menuIn { from { opacity: 0; transform: translateY(26px); } to { opacity: 1; transform: none; } }
+        .menu-row { transition: opacity 300ms ease; }
+        .menu-list:hover .menu-row:not(:hover):not(:focus-visible) { opacity: 0.4; }
+        @media (prefers-reduced-motion: reduce) {
+          .menu-panel { transition: none !important; }
+          .menu-anim { animation: none !important; }
+        }
       `}</style>
 
-      {/* Backdrop */}
+      {/* Backdrop: the thin margin around the panel closes it */}
       <div
         aria-hidden="true"
         onClick={onClose}
-        className={`fixed inset-0 z-[290] bg-[#1B0533]/45 backdrop-blur-sm transition-opacity duration-500 ${open ? "opacity-100" : "pointer-events-none opacity-0"}`}
+        className={`fixed inset-0 z-[290] bg-[#1B0533]/60 backdrop-blur-sm transition-opacity duration-500 ${open ? "opacity-100" : "pointer-events-none opacity-0"}`}
       />
 
       <aside
+        id="site-menu"
         role="dialog"
         aria-modal="true"
         aria-label="Site menu"
         aria-hidden={!open}
-        className={`fixed bottom-3 right-3 top-3 z-[295] flex w-[calc(100%-1.5rem)] flex-col overflow-hidden rounded-[32px] text-[#1B0533] shadow-[0_30px_80px_rgba(27,5,51,0.45)] transition-[transform,visibility] duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] motion-reduce:transition-none sm:w-[440px] lg:w-[38vw] lg:max-w-[540px] ${
-          open ? "visible translate-x-0" : "invisible translate-x-[110%]"
-        }`}
-        style={{ background: `linear-gradient(160deg, ${LILAC_SOFT} 0%, ${LILAC} 60%, #B98BFA 100%)` }}
+        className={`menu-panel fixed inset-3 z-[295] overflow-hidden rounded-[32px] text-white shadow-[0_30px_80px_rgba(27,5,51,0.55)] ring-1 ring-white/10 ${open ? "visible" : "invisible"}`}
+        style={{
+          background: `linear-gradient(155deg, #2D0C55 0%, ${INK} 55%, #12021F 100%)`,
+          clipPath: open ? "inset(0% 0% 0% 0% round 32px)" : "inset(0% 0% 100% 0% round 32px)",
+          transition: "clip-path 650ms cubic-bezier(0.76, 0, 0.24, 1), visibility 650ms",
+        }}
       >
-        {/* soft light in the corner */}
-        <span aria-hidden="true" className="pointer-events-none absolute -left-20 -top-24 h-72 w-72 rounded-full bg-white/50 blur-3xl" />
+        {/* soft violet light behind the content */}
+        <span aria-hidden="true" className="pointer-events-none absolute -right-24 -top-32 h-[26rem] w-[26rem] rounded-full blur-3xl" style={{ background: `${VIOLET}66` }} />
+        <span aria-hidden="true" className="pointer-events-none absolute -bottom-40 -left-24 h-[22rem] w-[22rem] rounded-full bg-[#C9A6FF]/10 blur-3xl" />
 
-        {/* Header: close button */}
-        <div className="relative flex h-[76px] flex-shrink-0 items-center justify-end px-5 sm:px-7">
-          <button
-            ref={closeRef}
-            type="button"
-            onClick={onClose}
-            aria-label="Close menu"
-            tabIndex={open ? 0 : -1}
-            className={`flex h-11 w-11 items-center justify-center rounded-full bg-[#1B0533] text-white transition-transform duration-300 hover:rotate-90 motion-reduce:transition-none ${focus}`}
-          >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" /></svg>
-          </button>
-        </div>
-
-        {/* Links */}
-        <nav aria-label="Site" className="relative flex min-h-0 flex-1 flex-col px-6 sm:px-9">
-          {MAIN_LINKS.map((l, i) => {
-            const active = l.submenu ? resourcesOn(path) : on(path, l.route);
-            const grown = l.submenu && resOpen;
-            const size = { fontSize: "clamp(1.25rem, 4.4dvh, 2.9rem)" };
-
-            return (
-              <div
-                key={l.label}
-                className="menu-anim flex min-h-0 flex-col justify-center border-t border-[#1B0533]/15 transition-[flex-grow] duration-300 ease-out"
-                style={{ flexGrow: grown ? 3.4 : 1, flexBasis: 0, ...enter(i) }}
-              >
-                {l.submenu ? (
-                  <>
-                    <button
-                      type="button"
-                      onClick={() => setResOpen((v) => !v)}
-                      aria-expanded={resOpen}
-                      tabIndex={open ? 0 : -1}
-                      className={`group flex w-full flex-shrink-0 items-center justify-between rounded-full text-left ${focus}`}
-                    >
-                      <span className="flex items-center gap-3 font-[Poppins] font-semibold leading-none tracking-tight" style={size}>
-                        {active && <span aria-hidden="true" className="h-2.5 w-2.5 rounded-full" style={{ background: VIOLET }} />}
-                        <span className="transition-transform duration-300 group-hover:translate-x-1.5">{l.label}</span>
-                      </span>
-                      <span className={`flex h-9 w-9 mt-2 items-center justify-center rounded-full border border-[#1B0533]/25 transition-all duration-300 group-hover:bg-[#1B0533] group-hover:text-white ${resOpen ? "rotate-45 bg-[#1B0533] text-white" : ""}`}>
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14" /></svg>
-                      </span>
-                    </button>
-
-                    <ul
-                      className="flex min-h-0 flex-col justify-center gap-1 overflow-hidden transition-[flex-grow,opacity] duration-300 ease-out"
-                      style={{ flexGrow: resOpen ? 1 : 0, opacity: resOpen ? 1 : 0 }}
-                    >
-                      {RESOURCES.map((r) => (
-                        <li key={r.route} className="flex min-h-0 flex-1">
-                          <Link
-                            to={r.route}
-                            onClick={onClose}
-                            tabIndex={open && resOpen ? 0 : -1}
-                            className={`flex w-full items-center gap-3 rounded-2xl px-2 transition-colors hover:bg-white/45 ${on(path, r.route) ? "bg-white/45" : ""} ${focus}`}
-                          >
-                            <span className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-[#1B0533] text-white">{r.icon}</span>
-                            <span className="flex flex-col leading-tight">
-                              <span className="font-[Poppins] font-medium" style={{ fontSize: "clamp(0.8rem, 2dvh, 1rem)" }}>{r.label}</span>
-                              <span className="font-[Poppins] text-[#1B0533]/60" style={{ fontSize: "clamp(0.65rem, 1.5dvh, 0.78rem)" }}>{r.desc}</span>
-                            </span>
-                          </Link>
-                        </li>
-                      ))}
-                    </ul>
-                  </>
-                ) : (
+        <div className="relative h-full overflow-y-auto overscroll-contain px-5 pb-6 pt-24 sm:px-8 lg:px-12 lg:pb-10 lg:pt-28">
+          <div className="mx-auto grid min-h-full max-w-[1240px] gap-8 lg:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)] lg:gap-14">
+            {/* ── Page links ── */}
+            <nav aria-label="Site" className="menu-list flex flex-col border-b border-white/12">
+              {NAV_LINKS.map((l, i) => {
+                const active = on(path, l.route);
+                return (
                   <Link
+                    key={l.route}
+                    ref={i === 0 ? firstLinkRef : undefined}
                     to={l.route}
                     onClick={onClose}
-                    tabIndex={open ? 0 : -1}
+                    tabIndex={tab}
                     aria-current={active ? "page" : undefined}
-                    className={`group flex w-full items-center justify-between rounded-full ${focus}`}
+                    className={`menu-row menu-anim group flex flex-1 items-center justify-between gap-6 border-t border-white/12 py-3 lg:min-h-[72px] ${focusDark}`}
+                    style={enter(i)}
                   >
-                    <span className="flex items-center gap-3 font-[Poppins] font-semibold leading-none tracking-tight" style={size}>
-                      {active && <span aria-hidden="true" className="h-2.5 w-2.5 rounded-full" style={{ background: VIOLET }} />}
-                      <span className="transition-transform duration-300 group-hover:translate-x-1.5">{l.label}</span>
+                    <span
+                      className="flex items-center gap-3 font-[Poppins] font-semibold leading-none tracking-tight transition-transform duration-300 group-hover:translate-x-2"
+                      style={{ fontSize: "clamp(2rem, 6.4dvh, 4.25rem)" }}
+                    >
+                      {active && <span aria-hidden="true" className="h-3 w-3 flex-shrink-0 rounded-full" style={{ background: LILAC }} />}
+                      <span className="transition-colors duration-300 group-hover:text-[#C9A6FF]">{l.label}</span>
                     </span>
-                    <span className="flex h-9 w-9 -translate-x-2 items-center justify-center rounded-full bg-[#1B0533] text-white opacity-0 transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100 group-focus-visible:translate-x-0 group-focus-visible:opacity-100">
-                      <Arrow size={14} />
+
+                    <span className="flex items-center gap-5">
+                      <span className="hidden max-w-[15rem] text-right font-[Poppins] text-sm leading-snug text-white/45 xl:block">{l.desc}</span>
+                      <span className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-full border border-white/20 text-white transition-all duration-300 group-hover:border-transparent group-hover:bg-[#C9A6FF] group-hover:text-[#1B0533]">
+                        <Arrow size={15} />
+                      </span>
                     </span>
                   </Link>
-                )}
-              </div>
-            );
-          })}
-        </nav>
+                );
+              })}
+            </nav>
 
-        {/* Footer */}
-        <div
-          className="menu-anim relative flex flex-shrink-0 items-center justify-between gap-3 border-t border-[#1B0533]/15 px-6 py-5 sm:px-9 sm:py-6"
-          style={enter(MAIN_LINKS.length)}
-        >
-          <a
-            href={DEMO_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={onClose}
-            tabIndex={open ? 0 : -1}
-            className={`group inline-flex items-center gap-3 rounded-full bg-[#1B0533] py-1.5 pl-6 pr-1.5 font-[Poppins] text-[15px] font-semibold text-white transition-shadow hover:shadow-[0_10px_30px_rgba(27,5,51,0.4)] ${focus}`}
-          >
-            Book a demo
-            <span className="flex h-9 w-9 items-center justify-center rounded-full bg-white text-[#1B0533] transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-rotate-45">
-              <Arrow />
-            </span>
-          </a>
-          <Link
-            to="/contact-us"
-            onClick={onClose}
-            tabIndex={open ? 0 : -1}
-            className={`rounded-full px-2 py-1 font-[Poppins] text-sm font-medium underline-offset-4 hover:underline ${focus}`}
-          >
-            Contact us
-          </Link>
+            {/* ── Resources + demo card ── */}
+            <div className="flex flex-col gap-4">
+              <section
+                aria-labelledby="menu-resources"
+                className="menu-anim rounded-[26px] bg-white/[0.06] p-2.5 ring-1 ring-white/10 sm:p-3"
+                style={enter(NAV_LINKS.length)}
+              >
+                <h2 id="menu-resources" className="px-3.5 pb-2 pt-3 font-[Poppins] text-sm font-medium text-white/55">
+                  Resources
+                </h2>
+                <ul className="flex flex-col">
+                  {RESOURCES.map((r) => {
+                    const active = on(path, r.route);
+                    return (
+                      <li key={r.route}>
+                        <Link
+                          to={r.route}
+                          onClick={onClose}
+                          tabIndex={tab}
+                          aria-current={active ? "page" : undefined}
+                          className={`group flex items-center gap-4 rounded-2xl px-3.5 py-3 transition-colors hover:bg-white/10 ${active ? "bg-white/10" : ""} ${focusDark}`}
+                        >
+                          <span className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-[#C9A6FF] text-[#1B0533]">{r.icon}</span>
+                          <span className="flex min-w-0 flex-1 flex-col leading-tight">
+                            <span className="font-[Poppins] text-base font-medium">{r.label}</span>
+                            <span className="mt-0.5 font-[Poppins] text-[13px] text-white/55">{r.desc}</span>
+                          </span>
+                          <span className="text-white/40 transition-all duration-300 group-hover:translate-x-1 group-hover:text-white">
+                            <Arrow size={15} />
+                          </span>
+                        </Link>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </section>
+
+              <div
+                className="menu-anim relative overflow-hidden rounded-[26px] p-6 text-[#1B0533] sm:p-7 lg:mt-auto"
+                style={{ background: `linear-gradient(150deg, ${LILAC_SOFT} 0%, ${LILAC} 100%)`, ...enter(NAV_LINKS.length + 1) }}
+              >
+                <span aria-hidden="true" className="pointer-events-none absolute -right-12 -top-14 h-48 w-48 rounded-full bg-white/45 blur-2xl" />
+                <p className="relative max-w-[18rem] font-[Poppins] text-2xl font-semibold leading-tight tracking-tight">
+                  See it with your own coaching business
+                </p>
+                <p className="relative mt-2 max-w-[20rem] font-[Poppins] text-sm text-[#1B0533]/70">
+                  Book a demo and we'll show you how it fits the way you coach.
+                </p>
+                <div className="relative mt-6 flex flex-wrap items-center gap-x-5 gap-y-3">
+                  <a
+                    href={DEMO_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={onClose}
+                    tabIndex={tab}
+                    className={`group inline-flex items-center gap-3 rounded-full bg-[#1B0533] py-1.5 pl-6 pr-1.5 font-[Poppins] text-[15px] font-semibold text-white transition-shadow hover:shadow-[0_10px_30px_rgba(27,5,51,0.4)] ${focusLight}`}
+                  >
+                    Book a demo
+                    <span className="flex h-9 w-9 items-center justify-center rounded-full bg-white text-[#1B0533] transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-rotate-45">
+                      <Arrow />
+                    </span>
+                  </a>
+                  <Link
+                    to="/contact-us"
+                    onClick={onClose}
+                    tabIndex={tab}
+                    className={`rounded-full px-1 py-1 font-[Poppins] text-sm font-medium underline underline-offset-4 ${focusLight}`}
+                  >
+                    Contact us
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </aside>
     </>
@@ -219,7 +226,7 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [compact, setCompact] = useState(false);
   const menuBtn = useRef(null);
-  const closeBtn = useRef(null);
+  const firstLink = useRef(null);
   const wasOpen = useRef(false);
 
   useEffect(() => {
@@ -248,14 +255,14 @@ export default function Navbar() {
   // focus moves into the panel on open and back to the trigger on close
   useEffect(() => {
     let t;
-    if (open) t = setTimeout(() => closeBtn.current?.focus(), 60);
+    if (open) t = setTimeout(() => firstLink.current?.focus(), 120);
     else if (wasOpen.current) menuBtn.current?.focus();
     wasOpen.current = open;
     return () => clearTimeout(t);
   }, [open]);
 
   const pill = `rounded-full bg-[#1B0533] text-white ring-1 ring-white/15 transition-shadow duration-300 ${
-    scrolled ? "shadow-[0_10px_30px_rgba(27,5,51,0.35)]" : "shadow-[0_4px_14px_rgba(27,5,51,0.18)]"
+    scrolled && !open ? "shadow-[0_10px_30px_rgba(27,5,51,0.35)]" : "shadow-[0_4px_14px_rgba(27,5,51,0.18)]"
   }`;
 
   return (
@@ -290,25 +297,35 @@ export default function Navbar() {
           >
             Book a demo
           </a>
+          {/* One button: opens the menu, and turns into Close while it is open */}
           <button
             ref={menuBtn}
             type="button"
-            onClick={() => setOpen(true)}
-            aria-label="Open menu"
+            onClick={() => setOpen((v) => !v)}
+            aria-label={open ? "Close menu" : "Open menu"}
             aria-expanded={open}
+            aria-controls="site-menu"
             className="group flex items-center gap-2.5 rounded-full py-2 pl-4 pr-2 font-[Poppins] text-[14.5px] font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C89BFF]"
             style={{ background: VIOLET }}
           >
-            Menu
+            {open ? "Close" : "Menu"}
             <span className="flex h-7 w-7 flex-col items-center justify-center gap-[4px] rounded-full bg-white/20 transition-colors group-hover:bg-white/30">
-              <span className="block h-[2px] w-3 rounded-full bg-white transition-all duration-300 group-hover:w-3.5" />
-              <span className="block h-[2px] w-3 rounded-full bg-white transition-all duration-300 group-hover:w-2" />
+              <span
+                className={`block h-[2px] rounded-full bg-white transition-all duration-300 ${
+                  open ? "w-3.5 translate-y-[3px] rotate-45" : "w-3 group-hover:w-3.5"
+                }`}
+              />
+              <span
+                className={`block h-[2px] rounded-full bg-white transition-all duration-300 ${
+                  open ? "w-3.5 -translate-y-[3px] -rotate-45" : "w-3 group-hover:w-2"
+                }`}
+              />
             </span>
           </button>
         </div>
       </header>
 
-      <MenuPanel open={open} onClose={() => setOpen(false)} path={pathname} closeRef={closeBtn} />
+      <MenuPanel open={open} onClose={() => setOpen(false)} path={pathname} firstLinkRef={firstLink} />
     </>
   );
 }

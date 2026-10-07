@@ -43,49 +43,49 @@ const features = [
     num: "002", icon: <Salad size={16} />, img: nutri,
     title: "Nutrition", subtitle: "Nutrition & Activity",
     desc: "Create personalised meal plans, set macro targets, track daily compliance. Includes a dedicated female health and hormonal cycle tracker.",
-    tags: ["Meal Tracking", "Macro Goals", "Compliance Monitor", "Female Health"],
+    tags: ["Meal Tracking", "Macro Goals", "Compliance Monitor", "Female Health"],left:false,
   },
   {
     num: "003", icon: <Bolt size={16} />, img: workflow,
     title: "Workflow", subtitle: "Business Automation",
     desc: "Lead allocation, client onboarding, payment flows, and communication sequences — completely automated and running in the background.",
-    tags: ["Lead Allocation", "Auto Onboarding", "Payment Flows", "Message Sequences"],
+    tags: ["Lead Allocation", "Auto Onboarding", "Payment Flows", "Message Sequences"],left:false,
   },
   {
     num: "004", icon: <MessageSquare size={16} />, img: engage,
     title: "Outreach", subtitle: "Client Engagement",
     desc: "Automated check-ins, in-app messaging, video calls, group challenges, and digital high-fives. Keep every client engaged between sessions.",
-    tags: ["In-App Messaging", "Video Calls", "Group Challenges", "Auto Check-ins"],
+    tags: ["In-App Messaging", "Video Calls", "Group Challenges", "Auto Check-ins"],left:false,
   },
   {
     num: "005", icon: <CreditCard size={16} />, img: payments,
     title: "Payments", subtitle: "Payments & Revenue",
     desc: "No more chasing. Accept online payments, set up recurring session packs, configure discounts, and handle partial payments — all built in.",
-    tags: ["Online Payments", "Session Packs", "Discount Codes", "Instalments"],
+    tags: ["Online Payments", "Session Packs", "Discount Codes", "Instalments"],left:false,
   },
   {
     num: "006", icon: <BarChart size={16} />, img: dashboards,
     title: "Dashboards", subtitle: "Dashboards & Reports",
     desc: "Real-time view of client compliance, progress, and business health. Custom surveys, pre-assessment forms, performance dashboards.",
-    tags: ["Live Reports", "Business Insights", "Custom Surveys", "Health Intake"],
+    tags: ["Live Reports", "Business Insights", "Custom Surveys", "Health Intake"],left:false,
   },
   {
     num: "007", icon: <Users size={16} />, img: teamcrm,
     title: "Team", subtitle: "Team & Organisation Management",
     desc: "Whether you are a solo coach or managing a multi-branch fitness organisation, scale effortlessly. Control teams, assign roles, and oversee operations from one central dashboard.",
-    tags: ["Team & Branch Management", "Role-Based Access", "Coach Allocation Limits", "Bulk Upload Tools"],
+    tags: ["Team & Branch Management", "Role-Based Access", "Coach Allocation Limits", "Bulk Upload Tools"],left:false,
   },
   {
     num: "008", icon: <Smartphone size={16} />, img: crmapp,
     title: "App", subtitle: "Mobile App iOS & Android",
     desc: "Run your entire coaching business from your pocket. Coaches and clients get a seamless mobile experience with real-time updates and integrated health tracking.",
-    tags: ["iOS & Android Apps", "Client Self-Service", "Push Notifications", "Health Data Sync"],
+    tags: ["iOS & Android Apps", "Client Self-Service", "Push Notifications", "Health Data Sync"],left:true,
   },
   {
     num: "009", icon: <ShieldCheck size={16} />, img: crmsecurity,
     title: "Security", subtitle: "Security & Compliance",
     desc: "Enterprise-grade security built into every plan. Protect sensitive client data with advanced authentication, secure payments, and compliance tools.",
-    tags: ["SSO Support", "Access Control", "PCI-DSS Payments", "GDPR Tools"],
+    tags: ["SSO Support", "Access Control", "PCI-DSS Payments", "GDPR Tools"],left:false,
   },
 ];
 
@@ -367,7 +367,7 @@ export default function FeatureList() {
                     src={features[shownIdx].img}
                     alt=""
                     draggable={false}
-                    className="h-full w-full object-cover object-top"
+                    className={`h-full w-full object-cover ${features[shownIdx].left ? " object-top" : "object-top-left"}`}
                   />
                 </div>
               </div>

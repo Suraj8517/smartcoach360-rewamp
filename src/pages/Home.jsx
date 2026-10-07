@@ -15,19 +15,27 @@ import { TrustedByNew } from '../components/Home/upgrade/TrustedBy'
 import FeatureList from '../components/Home/upgrade/featureList'
 import ForWhomNew from '../components/Home/upgrade/forWhom'
 import ExpertiseStack from '../components/Home/upgrade/howItWorks'
+import vid1 from "../assets/textSection/vid1.mp4";
+import vid2 from "../assets/textSection/vid2.mp4";
+
+import CtaSectionNew from '../components/Home/upgrade/ctaSection'
+import CoachesHero from '../components/Home/upgrade/ScreenText'
+import TitleEffect from '../components/Home/upgrade/titleEffect'
+
 export default function Home() {
   return (
     <>
     <ScrollHero/>
      <TrustedByNew/>
-     <HeroHeadline/>
+     <CoachesHero videoA={vid1} videoB={vid2}/>
      <FeatureList/>
      <CoachScrollReveal/>
 <ProblemSection/>
 <ForWhomNew/>
 <ExpertiseStack/>
 <SupportSection/>
-<CTASection/>
+<CtaSectionNew/>
+<TitleEffect/>
     </>
   )
 }

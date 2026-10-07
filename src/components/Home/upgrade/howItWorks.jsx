@@ -29,7 +29,7 @@ const steps = [
     badgeBg: "bg-[#A78BFA]/20",
     badgeText: "text-text",
     imageBorder: "border-[6px] border-[#A78BFA] sm:border-[10px]",
-    cta: { label: "Book a Demo", bg: "bg-[#A78BFA]", text: "text-white", circleBg: "bg-white", circleIcon: "text-[#A78BFA]" },
+    cta: { label: "Book a Demo", bg: "bg-[#A78BFA]", text: "text-white", circleBg: "bg-white", circleIcon: "text-[#A78BFA]",url:"https://calendly.com/sangameswaran-vmaxhealthtech/30min" },
   },
   {
     number: "02",
@@ -78,7 +78,7 @@ const steps = [
     badgeBg: "bg-[#A78BFA]",
     badgeText: "text-[#1F1936]",
     imageBorder: "border-[6px] border-[#A78BFA] sm:border-[10px]",
-    cta: { label: "Book a Demo", bg: "bg-white", text: "text-[#1F1936]", circleBg: "bg-[#A78BFA]", circleIcon: "text-white" },
+    cta: { label: "Book a Demo", bg: "bg-white", text: "text-[#1F1936]", circleBg: "bg-[#A78BFA]", circleIcon: "text-white", url: "https://calendly.com/sangameswaran-vmaxhealthtech/30min" },
   },
 ];
 
@@ -160,7 +160,7 @@ export default function ExpertiseStack() {
                   >
                     {c.tag}
                   </span>
-                  <h2 className="mt-4 break-words text-[6.8vw] font-black leading-[1] tracking-tight sm:mt-6 sm:text-6xl sm:leading-[0.95] lg:text-7xl">
+                  <h2 className="mt-4 break-words text-[6.8vw] font-space font-black leading-[1] tracking-tight sm:mt-6 sm:text-6xl sm:leading-[0.95] lg:text-7xl">
                     {c.title}
                   </h2>
                 </div>
@@ -172,15 +172,15 @@ export default function ExpertiseStack() {
 
                   {c.cta && (
                     <div className="mt-6">
-                      <a href={url} target="_blank" rel="noopener noreferrer">
                         <JoinNow
                           text={c.cta.label}
                           bg={c.cta.bg}
                           color={c.cta.text}
                           circleBg={c.cta.circleBg}
                           circleColor={c.cta.circleIcon}
+                            url={c.cta.url}
                         />
-                      </a>
+                      
                     </div>
                   )}
                 </div>

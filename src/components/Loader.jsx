@@ -1,5 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import img1 from "../assets/loader/1.webp";
+import img2 from "../assets/loader/2.webp";
+import img3 from "../assets/loader/3.webp";
+import img4 from "../assets/loader/4.webp";
 
 /**
  * SMARTCOACH360 loader, rebuilt from the reference recording.
@@ -67,7 +71,7 @@ function Letters({ text, startIndex = 0, reduce, accentFrom = -1, accentColor })
 }
 
 export default function SmartCoachLoader({
-  images = [],
+  images = [img1, img2, img3, img4], 
   left = "SMART",
   right = "COACH360",
   splitAtMs = 1000, // when the word splits open, counted from mount
@@ -137,11 +141,10 @@ export default function SmartCoachLoader({
           exit={{ opacity: 0, transition: { duration: 0.5, ease: "easeInOut" } }}
         >
           <div
-            className="flex items-center justify-center whitespace-nowrap font-medium tracking-[0.01em] text-[#0a0a0a]"
+            className="flex items-center font-space justify-center whitespace-nowrap font-medium tracking-[0.01em] text-[#0a0a0a]"
             style={{
               fontSize: "clamp(1.6rem, 7.2vw, 7.5rem)",
-              fontFamily:
-                "'Helvetica Neue', Helvetica, 'Inter', Arial, sans-serif",
+              
             }}
           >
             <Letters text={left} reduce={reduce} />
