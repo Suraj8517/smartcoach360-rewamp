@@ -159,18 +159,18 @@ export default function CtaSectionNew({
           <Angel
             src={angelRight}
             speed="-0.9"
-            className="left-[-1%] top-[24%] w-[23%] md:left-[4.95%] md:top-[6.3%] md:w-[12.5%]"
+            className="left-[-1%] top-[14%] w-[23%] md:left-[4.95%] md:top-[6.3%] md:w-[12.5%]"
           />
           <Angel
             src={angelLeft}
             speed="1.1"
-            className="right-[-2%] top-[30%] w-[31%] md:bottom-auto md:left-[76.3%] md:right-auto md:top-[49.8%] md:w-[13.3%]"
+            className="right-[-2%] top-[22%] w-[31%] md:bottom-auto md:left-[76.3%] md:right-auto md:top-[49.8%] md:w-[13.3%]"
           />
 
           {/* Line 1: THE GOAL + IS NOT + to work harder */}
-          <div className="absolute left-[17.6%] top-[37%] z-10 whitespace-nowrap md:left-[17.5%] md:top-[13%]">
+          <div className="absolute left-[17.6%] top-[19%] z-10 whitespace-nowrap md:left-[17.5%] md:top-[13%]">
             <Roll text="THE GOAL" />
-            <span className="absolute bottom-full left-[62%] mb-[0.25em] text-[0.45em] leading-none md:static md:mb-0 md:inline md:text-[1em] md:leading-[0.82]">
+            <span className="absolute left-0 top-full mt-[0.1em] text-[0.45em] leading-none md:static md:mt-0 md:inline md:text-[1em] md:leading-[0.82]">
               <span
                 className="text-[1em] normal-case italic tracking-[-0.06em] md:ml-[0.28em] md:text-[0.33em] md:tracking-[-0.075em]"
                 style={SERIF}
@@ -187,7 +187,7 @@ export default function CtaSectionNew({
           </div>
 
           {/* Line 2: it is + TO BUILD */}
-          <div className="absolute left-0 top-[54%] z-10 whitespace-nowrap md:left-[9.5%] md:top-[38.3%]">
+          <div className="absolute left-20 top-[45%] z-10 whitespace-nowrap md:left-[9.5%] md:top-[38.3%]">
             <span
               className="mr-[0.09em] text-[0.26em] font-normal normal-case tracking-[-0.03em] md:text-[0.24em]"
               style={SERIF}
@@ -198,7 +198,7 @@ export default function CtaSectionNew({
           </div>
 
           {/* Line 3: A Business + that will */}
-          <div className="absolute left-[0.5%] top-[70.4%] z-10 whitespace-nowrap md:left-[18.7%] md:top-[62.1%]">
+          <div className="absolute left-[5%] top-[62%] z-10 whitespace-nowrap md:left-[18.7%] md:top-[62.1%]">
             <Roll text="A Business" />
             <span className="ml-[0.08em] text-[0.3em] normal-case tracking-[-0.05em] md:text-[0.23em]">
               that will
