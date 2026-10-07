@@ -15,6 +15,7 @@ const ECHO_CLIP =
 
 const clamp = (v) => Math.max(0, Math.min(1, v));
 const easeOut = (t) => 1 - Math.pow(1 - t, 3);
+const THRESHOLDS = Array.from({ length: 101 }, (_, i) => i / 100);
 
 export default function SmartCoachHero() {
   const trackRef = useRef(null);
@@ -42,19 +43,9 @@ export default function SmartCoachHero() {
   }, []);
 
   useEffect(() => {
-    let ticking = false;
-
-    const update = () => {
-      ticking = false;
-      const track = trackRef.current;
-      if (!track) return;
-
-      // 0 when the section's top edge enters the viewport, 1 when it reaches the top
-      const { top } = track.getBoundingClientRect();
-      const vh = 300;
-      const q = easeOut(clamp((vh - top) / vh));
-
-      // start: main text spans the screen; end: outer echo spans the screen
+    // q: 0 = main text spans the screen, 1 = outer echo spans the screen
+    const apply = (q) => {
+      if (!scalerRef.current || !wrapRef.current) return;
       const startScale = 1 + X_STEP * ECHOES.length;
       scalerRef.current.style.transform = `scale(${startScale - (startScale - 1) * q})`;
       wrapRef.current.style.transform = `translateY(${q * 0.3}em)`;
@@ -64,29 +55,69 @@ export default function SmartCoachHero() {
       });
     };
 
-    const onScroll = () => {
-      if (!ticking) {
-        ticking = true;
-        requestAnimationFrame(update);
-      }
+    /* Desktop (md+): original pinned-scroll behaviour, unchanged. */
+    const desktop = () => {
+      let ticking = false;
+      const update = () => {
+        ticking = false;
+        const track = trackRef.current;
+        if (!track) return;
+        const { top } = track.getBoundingClientRect();
+        const vh = 300;
+        apply(easeOut(clamp((vh - top) / vh)));
+      };
+      const onScroll = () => {
+        if (!ticking) {
+          ticking = true;
+          requestAnimationFrame(update);
+        }
+      };
+      update();
+      window.addEventListener("scroll", onScroll, { passive: true });
+      window.addEventListener("resize", onScroll);
+      return () => {
+        window.removeEventListener("scroll", onScroll);
+        window.removeEventListener("resize", onScroll);
+      };
     };
 
-    update();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll);
+    /* Mobile: no pinned/screen-height section. Progress comes from how much of
+       the section itself is visible, so it never depends on the screen height. */
+    const mobile = () => {
+      apply(0);
+      const io = new IntersectionObserver(
+        ([entry]) => {
+          const q = entry.boundingClientRect.top <= 0 ? 1 : easeOut(entry.intersectionRatio);
+          apply(q);
+        },
+        { threshold: THRESHOLDS }
+      );
+      trackRef.current && io.observe(trackRef.current);
+      return () => io.disconnect();
+    };
+
+    const mq = window.matchMedia("(min-width: 768px)");
+    let cleanup;
+    const setup = () => {
+      cleanup && cleanup();
+      cleanup = mq.matches ? desktop() : mobile();
+    };
+    setup();
+    mq.addEventListener("change", setup);
     return () => {
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onScroll);
+      mq.removeEventListener("change", setup);
+      cleanup && cleanup();
     };
   }, []);
 
   return (
     <section
       ref={trackRef}
-      className="relative h-[130vh] text-[#434343] dark:bg-[#161616] dark:text-[#e6e6e6]"
+      className="relative text-[#434343] dark:bg-[#161616] dark:text-[#e6e6e6] md:h-[130vh]"
     >
-      <div className="sticky top-0 h-screen overflow-hidden">
-        <div className="absolute inset-0 flex items-center justify-center">
+      {/* Mobile: normal block sized by its content. Desktop: pinned, full-screen stage. */}
+      <div className="relative overflow-hidden md:sticky md:top-0 md:h-screen">
+        <div className="flex items-center justify-center py-[16vw] md:absolute md:inset-0 md:py-0">
           <div ref={scalerRef} className="origin-center will-change-transform">
             <div
               ref={wrapRef}
