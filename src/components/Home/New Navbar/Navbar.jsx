@@ -5,11 +5,10 @@ import logo from "../../../assets/smartcoach360.svg";
 const DEMO_URL = import.meta.env.VITE_CALENDLY_LINK;
 
 /* ─── Tokens ───────────────────────────────────────────────────────────────── */
+/* Black + white throughout. Violet is kept in exactly one place: the Menu button. */
 
-const VIOLET = "#6E0ACE";
-const LILAC = "#C9A6FF";
-const LILAC_SOFT = "#E3CFFF";
-const INK = "#1B0533";
+const VIOLET = "#6E0ACE"; // Menu button only
+const BLACK = "#0A0A0A";
 
 const HIDE_WORDMARK_AT = 80;
 
@@ -43,14 +42,14 @@ const Arrow = ({ size = 16 }) => (
   </svg>
 );
 
-// focus rings: one for the dark panel, one for the lilac CTA card
+// focus rings: one for the black panel, one for the white CTA card
 const focusDark =
-  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A6FF] focus-visible:ring-offset-2 focus-visible:ring-offset-[#1B0533]";
+  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#0A0A0A]";
 const focusLight =
-  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1B0533] focus-visible:ring-offset-2 focus-visible:ring-offset-[#E3CFFF]";
+  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0A0A0A] focus-visible:ring-offset-2 focus-visible:ring-offset-white";
 
 /* ─── Menu panel ───────────────────────────────────────────────────────────── */
-/* A near-full-screen dark sheet that unrolls from the top, under the floating
+/* A near-full-screen black sheet that unrolls from the top, under the floating
    header pills (the Menu button turns into Close, so the same button opens
    and closes it).
    Desktop: big page links on the left, Resources + a demo card on the right.
@@ -80,7 +79,7 @@ function MenuPanel({ open, onClose, path, firstLinkRef }) {
       <div
         aria-hidden="true"
         onClick={onClose}
-        className={`fixed inset-0 z-[290] bg-[#1B0533]/60 backdrop-blur-sm transition-opacity duration-500 ${open ? "opacity-100" : "pointer-events-none opacity-0"}`}
+        className={`fixed inset-0 z-[290] bg-black/60 backdrop-blur-sm transition-opacity duration-500 ${open ? "opacity-100" : "pointer-events-none opacity-0"}`}
       />
 
       <aside
@@ -89,16 +88,16 @@ function MenuPanel({ open, onClose, path, firstLinkRef }) {
         aria-modal="true"
         aria-label="Site menu"
         aria-hidden={!open}
-        className={`menu-panel fixed inset-3 z-[295] overflow-hidden rounded-[32px] text-white shadow-[0_30px_80px_rgba(27,5,51,0.55)] ring-1 ring-white/10 ${open ? "visible" : "invisible"}`}
+        className={`menu-panel fixed inset-3 z-[295] overflow-hidden rounded-[32px] text-white shadow-[0_30px_80px_rgba(0,0,0,0.55)] ring-1 ring-white/10 ${open ? "visible" : "invisible"}`}
         style={{
-          background: `linear-gradient(155deg, #2D0C55 0%, ${INK} 55%, #12021F 100%)`,
+          background: `linear-gradient(155deg, #1C1C1C 0%, ${BLACK} 55%, #000000 100%)`,
           clipPath: open ? "inset(0% 0% 0% 0% round 32px)" : "inset(0% 0% 100% 0% round 32px)",
           transition: "clip-path 650ms cubic-bezier(0.76, 0, 0.24, 1), visibility 650ms",
         }}
       >
-        {/* soft violet light behind the content */}
-        <span aria-hidden="true" className="pointer-events-none absolute -right-24 -top-32 h-[26rem] w-[26rem] rounded-full blur-3xl" style={{ background: `${VIOLET}66` }} />
-        <span aria-hidden="true" className="pointer-events-none absolute -bottom-40 -left-24 h-[22rem] w-[22rem] rounded-full bg-[#C9A6FF]/10 blur-3xl" />
+        {/* soft white light behind the content */}
+        <span aria-hidden="true" className="pointer-events-none absolute -right-24 -top-32 h-[26rem] w-[26rem] rounded-full bg-white/[0.07] blur-3xl" />
+        <span aria-hidden="true" className="pointer-events-none absolute -bottom-40 -left-24 h-[22rem] w-[22rem] rounded-full bg-white/[0.04] blur-3xl" />
 
         <div className="relative h-full overflow-y-auto overscroll-contain px-5 pb-6 pt-24 sm:px-8 lg:px-12 lg:pb-10 lg:pt-28">
           <div className="mx-auto grid min-h-full max-w-[1240px] gap-8 lg:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)] lg:gap-14">
@@ -121,13 +120,13 @@ function MenuPanel({ open, onClose, path, firstLinkRef }) {
                       className="flex items-center gap-3 font-[Poppins] font-semibold leading-none tracking-tight transition-transform duration-300 group-hover:translate-x-2"
                       style={{ fontSize: "clamp(2rem, 6.4dvh, 4.25rem)" }}
                     >
-                      {active && <span aria-hidden="true" className="h-3 w-3 flex-shrink-0 rounded-full" style={{ background: LILAC }} />}
-                      <span className="transition-colors duration-300 group-hover:text-[#C9A6FF]">{l.label}</span>
+                      {active && <span aria-hidden="true" className="h-3 w-3 flex-shrink-0 rounded-full bg-white" />}
+                      <span>{l.label}</span>
                     </span>
 
                     <span className="flex items-center gap-5">
                       <span className="hidden max-w-[15rem] text-right font-[Poppins] text-sm leading-snug text-white/45 xl:block">{l.desc}</span>
-                      <span className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-full border border-white/20 text-white transition-all duration-300 group-hover:border-transparent group-hover:bg-[#C9A6FF] group-hover:text-[#1B0533]">
+                      <span className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-full border border-white/20 text-white transition-all duration-300 group-hover:border-transparent group-hover:bg-white group-hover:text-black">
                         <Arrow size={15} />
                       </span>
                     </span>
@@ -158,7 +157,7 @@ function MenuPanel({ open, onClose, path, firstLinkRef }) {
                           aria-current={active ? "page" : undefined}
                           className={`group flex items-center gap-4 rounded-2xl px-3.5 py-3 transition-colors hover:bg-white/10 ${active ? "bg-white/10" : ""} ${focusDark}`}
                         >
-                          <span className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-[#C9A6FF] text-[#1B0533]">{r.icon}</span>
+                          <span className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-white text-black">{r.icon}</span>
                           <span className="flex min-w-0 flex-1 flex-col leading-tight">
                             <span className="font-[Poppins] text-base font-medium">{r.label}</span>
                             <span className="mt-0.5 font-[Poppins] text-[13px] text-white/55">{r.desc}</span>
@@ -174,14 +173,13 @@ function MenuPanel({ open, onClose, path, firstLinkRef }) {
               </section>
 
               <div
-                className="menu-anim relative overflow-hidden rounded-[26px] p-6 text-[#1B0533] sm:p-7 lg:mt-auto"
-                style={{ background: `linear-gradient(150deg, ${LILAC_SOFT} 0%, ${LILAC} 100%)`, ...enter(NAV_LINKS.length + 1) }}
+                className="menu-anim relative overflow-hidden rounded-[26px] bg-white p-6 text-black sm:p-7 lg:mt-auto"
+                style={enter(NAV_LINKS.length + 1)}
               >
-                <span aria-hidden="true" className="pointer-events-none absolute -right-12 -top-14 h-48 w-48 rounded-full bg-white/45 blur-2xl" />
                 <p className="relative max-w-[18rem] font-[Poppins] text-2xl font-semibold leading-tight tracking-tight">
                   See it with your own coaching business
                 </p>
-                <p className="relative mt-2 max-w-[20rem] font-[Poppins] text-sm text-[#1B0533]/70">
+                <p className="relative mt-2 max-w-[20rem] font-[Poppins] text-sm text-black/65">
                   Book a demo and we'll show you how it fits the way you coach.
                 </p>
                 <div className="relative mt-6 flex flex-wrap items-center gap-x-5 gap-y-3">
@@ -191,10 +189,10 @@ function MenuPanel({ open, onClose, path, firstLinkRef }) {
                     rel="noopener noreferrer"
                     onClick={onClose}
                     tabIndex={tab}
-                    className={`group inline-flex items-center gap-3 rounded-full bg-[#1B0533] py-1.5 pl-6 pr-1.5 font-[Poppins] text-[15px] font-semibold text-white transition-shadow hover:shadow-[0_10px_30px_rgba(27,5,51,0.4)] ${focusLight}`}
+                    className={`group inline-flex items-center gap-3 rounded-full bg-black py-1.5 pl-6 pr-1.5 font-[Poppins] text-[15px] font-semibold text-white transition-shadow hover:shadow-[0_10px_30px_rgba(0,0,0,0.35)] ${focusLight}`}
                   >
                     Book a demo
-                    <span className="flex h-9 w-9 items-center justify-center rounded-full bg-white text-[#1B0533] transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-rotate-45">
+                    <span className="flex h-9 w-9 items-center justify-center rounded-full bg-white text-black transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-rotate-45">
                       <Arrow />
                     </span>
                   </a>
@@ -217,7 +215,7 @@ function MenuPanel({ open, onClose, path, firstLinkRef }) {
 }
 
 /* ─── Top bar ──────────────────────────────────────────────────────────────── */
-/* Two floating dark pills: logo on the left, actions on the right. They are
+/* Two floating black pills: logo on the left, actions on the right. They are
    solid, so they stay readable over any section — no blend-mode tricks.      */
 
 export default function Navbar() {
@@ -261,8 +259,8 @@ export default function Navbar() {
     return () => clearTimeout(t);
   }, [open]);
 
-  const pill = `rounded-full bg-[#1B0533] text-white ring-1 ring-white/15 transition-shadow duration-300 ${
-    scrolled && !open ? "shadow-[0_10px_30px_rgba(27,5,51,0.35)]" : "shadow-[0_4px_14px_rgba(27,5,51,0.18)]"
+  const pill = `rounded-full bg-[#0A0A0A] text-white ring-1 ring-white/15 transition-shadow duration-300 ${
+    scrolled && !open ? "shadow-[0_10px_30px_rgba(0,0,0,0.35)]" : "shadow-[0_4px_14px_rgba(0,0,0,0.18)]"
   }`;
 
   return (
@@ -272,7 +270,7 @@ export default function Navbar() {
         <Link
           to="/"
           aria-label="smartcoach360.ai home"
-          className={`pointer-events-auto flex items-center gap-2 p-1.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C89BFF] ${pill}`}
+          className={`pointer-events-auto flex items-center gap-2 p-1.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white ${pill}`}
         >
           <span className="flex h-9 w-9 items-center justify-center rounded-full bg-white">
             <img src={logo} alt="" className="h-5 w-5 object-contain" />
@@ -283,7 +281,7 @@ export default function Navbar() {
             }`}
           >
             <span className="text-[17px] font-bold leading-none tracking-[-0.4px]">smartcoach360</span>
-            <span className="ml-0.5 text-[12px] leading-none text-[#C89BFF]">.ai</span>
+            <span className="ml-0.5 text-[12px] leading-none text-white/60">.ai</span>
           </span>
         </Link>
 
@@ -293,7 +291,7 @@ export default function Navbar() {
             href={DEMO_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="hidden rounded-full px-4 py-2 font-[Poppins] text-[14.5px] font-medium text-white/80 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C89BFF] sm:block"
+            className="hidden rounded-full px-4 py-2 font-[Poppins] text-[14.5px] font-medium text-white/80 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white sm:block"
           >
             Book a demo
           </a>
@@ -305,7 +303,7 @@ export default function Navbar() {
             aria-label={open ? "Close menu" : "Open menu"}
             aria-expanded={open}
             aria-controls="site-menu"
-            className="group flex items-center gap-2.5 rounded-full py-2 pl-4 pr-2 font-[Poppins] text-[14.5px] font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C89BFF]"
+            className="group flex items-center gap-2.5 rounded-full py-2 pl-4 pr-2 font-[Poppins] text-[14.5px] font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
             style={{ background: VIOLET }}
           >
             {open ? "Close" : "Menu"}

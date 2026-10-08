@@ -1,10 +1,15 @@
 import { useLayoutEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 
-const FONTS = `@import url('https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500&family=Playfair+Display:wght@900&family=Great+Vibes&display=swap');`;
+const FONTS = `@import url('https://fonts.googleapis.com/css2?family=Anton&family=Inter+Tight:wght@400;500&family=Great+Vibes&display=swap');`;
 
 const SANS = { fontFamily: "'Inter Tight', 'Helvetica Neue', Arial, sans-serif" };
-const SERIF = { fontFamily: "'Playfair Display', 'Bodoni 72', Georgia, serif", fontWeight: 900 };
+/* Anton is the display face from your theme (--font-display). It only ships
+   in weight 400, so don't set 900 or the browser will fake a bold. */
+const DISPLAY = {
+  fontFamily: "'Anton', 'Impact', 'Haettenschweiler', 'Arial Narrow Bold', sans-serif",
+  fontWeight: 400,
+};
 const SCRIPT = { fontFamily: "'Great Vibes', 'Snell Roundhand', cursive", fontWeight: 400 };
 
 const socialLinks = [
@@ -59,10 +64,11 @@ function FitText({ text, style }) {
 }
 
 const wordStyle = {
-  ...SERIF,
+  ...DISPLAY,
   color: "#404040",
-  lineHeight: 0.8,
-  letterSpacing: "-0.02em",
+  lineHeight: 1,
+  letterSpacing: "0",
+  textTransform: "uppercase",
 };
 
 const scriptStyle = {
@@ -84,20 +90,18 @@ export default function Footer() {
     <footer className="w-full overflow-hidden bg-bg text-[#404040]" style={SANS}>
       <style>{FONTS}</style>
 
-      {/* ── Wordmark + flag line + script watermark ── */}
-      <div className="relative pb-[16vw] md:pb-[9vw]">
+      {/* ── Wordmark + flag line ── */}
+      <div className="relative pb-10 md:pb-[5vw]">
         <div className="relative z-10">
          
 
-          {/* India flag line, same idea as the tricolour under the reference */}
+          {/* India flag line */}
           <div className="flex h-[5px] w-full md:h-[6px]" aria-hidden="true">
             <span className="flex-1 bg-[#ff9933]" />
             <span className="flex-1 bg-white" />
             <span className="flex-1 bg-[#138808]" />
           </div>
         </div>
-
-        
       </div>
 
       {/* ── Info columns ── */}
