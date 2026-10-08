@@ -35,7 +35,6 @@ export default function Home() {
 <ExpertiseStack/>
 <SupportSection/>
 <CtaSectionNew/>
-<TitleEffect/>
     </>
   )
 }

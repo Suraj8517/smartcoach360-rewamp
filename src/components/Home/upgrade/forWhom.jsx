@@ -212,7 +212,7 @@ export default function CustomersSection() {
   const [active, setActive] = useState(0);
 
   return (
-    <section className="w-full ">
+    <section className="w-full bg-bg">
       <div className="mx-auto max-w-[1312px] px-5 py-12 sm:px-8 sm:py-14 lg:px-0 lg:py-16">
         {/* Header */}
         <div className="mb-6 flex flex-col gap-5 sm:mb-8 sm:flex-row sm:items-end sm:justify-between">

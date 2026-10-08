@@ -19,6 +19,7 @@ import BlogPosts from './pages/blogPosts';
 import Security from './pages/Security';
 import ScrollToTop from './components/Helper/ScrollToTop';
 import SmartCoach360Loader from './components/Loader';
+import NewFooter from './components/Home/New Navbar/footer';
 export default function LandingPage() {
   return (
     <>
@@ -45,7 +46,7 @@ export default function LandingPage() {
 
    </Routes>
     </main>
-    <Footer/>
+    <NewFooter/>
     </Router>
     </>
 

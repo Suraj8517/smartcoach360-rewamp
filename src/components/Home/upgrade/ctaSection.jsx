@@ -141,7 +141,7 @@ export default function CtaSectionNew({
   return (
     <section
       ref={sectionRef}
-      className="relative w-full overflow-hidden py-10 text-[#404040] md:py-2"
+      className="relative w-full overflow-hidden py-10 bg-bg text-[#404040] md:pt-2 md:pb-16"
     >
       <style>{FONTS}</style>
 

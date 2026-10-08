@@ -7,7 +7,7 @@ const SIDE_GAP = 0.03; // screen-edge margin (fraction of width)
 const ECHOES = [1, 2, 3, 4, 5];
 
 // Purple shades for the echo layers, nearest to farthest
-const ECHO_COLORS = ["#5b21b6", "#7c3aed", "#8b5cf6", "#a78bfa", "#c4b5fd"];
+const ECHO_COLORS = ["#111111", "#111111", "#111111", "#111111", "#111111"];
 
 // Keeps only a thin top band + the left and right edges of each copy
 const ECHO_CLIP =
