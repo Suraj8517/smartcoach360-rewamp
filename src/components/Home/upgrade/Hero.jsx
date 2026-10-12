@@ -6,27 +6,16 @@ import bgVideo from "../../../assets/upgrade/hero/bgvideo.mp4"
 import Title1Lines from './utils/title1Lines';
 import Words from './utils/words';
 gsap.registerPlugin(ScrollTrigger);
-
-/* ---------------------------------------------------------------------- */
-/* Collage tiles — seeded picsum.photos placeholders. `ar` is each tile's  */
-/* aspect ratio (width / height). The tile's height is derived from it, so */
-/* a tile never gets stretched or awkwardly cropped, and the placeholder   */
-/* image is requested at exactly that ratio. Swap each image for a real    */
-/* photo/<Image> (keep the same ratio, or object-cover will crop it).      */
-/* Keep this list the same length as the icon entries in the layouts below */
-/* (9), otherwise two tiles end up stacked on the same spot.               */
-/* ---------------------------------------------------------------------- */
-
 const CARD_DATA = [
-  { seed: 'be-tile-1', ar: 4 / 3 },
-  { seed: 'be-tile-2', ar: 3 / 4 }, // portrait
-  { seed: 'be-tile-3', ar: 4 / 3 },
-  { seed: 'be-tile-4', ar: 1 }, // square
-  { seed: 'be-tile-5', ar: 4 / 3 },
-  { seed: 'be-tile-6', ar: 3 / 4 }, // portrait
-  { seed: 'be-tile-7', ar: 4 / 3 },
-  { seed: 'be-tile-8', ar: 4 / 3 },
-  { seed: 'be-tile-9', ar: 1 }, // square
+  { seed: 'v1791790138/1_y78jrc', ar: 4 / 3 },
+  { seed: 'v1791790129/7_ss3mpj', ar: 3 / 4 }, // portrait
+  { seed: 'v1791790129/5_iv0u9p', ar: 4 / 3 },
+  { seed: 'v1791790128/6_bg7dab', ar: 1 }, // square
+  { seed: 'v1791790127/4_w6ub6y', ar: 4 / 3 },
+  { seed: 'v1791790127/2_xpdurl', ar: 3 / 4 }, // portrait
+  { seed: 'v1791790127/3_zrgvaq', ar: 4 / 3 },
+  { seed: 'v1791795108/8_ddbv2b', ar: 4 / 3 },
+  { seed: 'v1791795107/9_pz9brz', ar: 4 / 3 },
 ];
 
 /* ---------------------------------------------------------------------- */
@@ -847,6 +836,10 @@ export default function ScrollHero() {
       destroy();
     };
   }, []);
+const CLOUD = "https://res.cloudinary.com/q1vba78b/image/upload";
+
+const cldUrl = (seed, width, ar) =>
+  `${CLOUD}/w_${width},h_${Math.round(width / ar)},c_fill,f_auto,q_auto/${seed}`;
 
   return (
     <>
@@ -905,7 +898,7 @@ export default function ScrollHero() {
                     className="overflow-hidden will-change-transform shadow-[0_20px_60px_rgba(0,0,0,0.18)]"
                   >
                     <img
-                      src={`https://picsum.photos/seed/${card.seed}/640/${Math.round(640 / card.ar)}`}
+                      src={cldUrl(card.seed, 640, card.ar)}
                       alt=""
                       className="h-full w-full object-cover"
                       draggable={false}
