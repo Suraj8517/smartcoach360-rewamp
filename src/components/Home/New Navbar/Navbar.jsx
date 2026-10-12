@@ -48,12 +48,7 @@ const focusDark =
 const focusLight =
   "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0A0A0A] focus-visible:ring-offset-2 focus-visible:ring-offset-white";
 
-/* ─── Menu panel ───────────────────────────────────────────────────────────── */
-/* A near-full-screen black sheet that unrolls from the top, under the floating
-   header pills (the Menu button turns into Close, so the same button opens
-   and closes it).
-   Desktop: big page links on the left, Resources + a demo card on the right.
-   Mobile:  the same content stacked, scrollable.                              */
+
 
 function MenuPanel({ open, onClose, path, firstLinkRef }) {
   // staggered entrance, replays every time the panel opens.
@@ -213,10 +208,6 @@ function MenuPanel({ open, onClose, path, firstLinkRef }) {
     </>
   );
 }
-
-/* ─── Top bar ──────────────────────────────────────────────────────────────── */
-/* Two floating black pills: logo on the left, actions on the right. They are
-   solid, so they stay readable over any section — no blend-mode tricks.      */
 
 export default function Navbar() {
   const { pathname } = useLocation();

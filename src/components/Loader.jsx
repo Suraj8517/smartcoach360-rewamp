@@ -4,30 +4,28 @@ import img1 from "../assets/loader/1.webp";
 import img2 from "../assets/loader/2.webp";
 import img3 from "../assets/loader/3.webp";
 import img4 from "../assets/loader/4.webp";
-
-/**
- * SMARTCOACH360 loader, rebuilt from the reference recording.
- *
- * Timeline observed in the video (frame by frame):
- *  1. Letters rise from below a clipping line, one after another, left to right.
- *  2. The finished word holds still as one solid word.
- *  3. The word splits: the left half moves left, the right half moves right,
- *     leaving an empty gap (the gap is the width of the first image).
- *  4. A slot fades in inside the gap, then the first image shows.
- *  5. Images hard-cut every 0.5s inside a slot of one fixed size
- *     (images are cropped to fill it, so the words never shift).
- *
- * All sizes are in em, and the font size is fluid, so it scales on every screen.
- */
+import logoMask from "../assets/loader/logo-mask.svg";
 
 const EXPO_OUT = [0.16, 1, 0.3, 1];
 const IN_OUT = [0.76, 0, 0.24, 1];
 
-const SLOT_H = 1.6; // slot height in em (about 2.2x the cap height, as in the video)
-const GAP = 0.12; // space between the words and the slot, in em
-const SLOT_W = 1.3; // slot width in em: fixed, so every image is the same size
+const SLOT_H = 1.6; // slot height in em
+const LOGO_RATIO = 27 / 39; // logo svg width / height, keeps the logo undistorted
+const SLOT_W = SLOT_H * LOGO_RATIO; // slot width follows the logo shape
+const GAP = 0.12; // space between the words and the logo, in em
 
-// Demo placeholders (different shapes) used only if you pass no images.
+// The images only show where the logo mask is solid.
+const LOGO_MASK_STYLE = {
+  WebkitMaskImage: `url(${logoMask})`,
+  maskImage: `url(${logoMask})`,
+  WebkitMaskSize: "100% 100%",
+  maskSize: "100% 100%",
+  WebkitMaskRepeat: "no-repeat",
+  maskRepeat: "no-repeat",
+  WebkitMaskPosition: "center",
+  maskPosition: "center",
+};
+
 const ph = (w, h, c) =>
   `data:image/svg+xml;utf8,${encodeURIComponent(
     `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}"><rect width="${w}" height="${h}" fill="${c}"/></svg>`
@@ -39,7 +37,6 @@ const FALLBACK = [
   ph(160, 160, "#ee6fb0"),
 ];
 
-// Each letter sits in a clipping mask and slides up from below it.
 function Letters({ text, startIndex = 0, reduce, accentFrom = -1, accentColor }) {
   return (
     <span className="flex">
@@ -71,15 +68,13 @@ function Letters({ text, startIndex = 0, reduce, accentFrom = -1, accentColor })
 }
 
 export default function SmartCoachLoader({
-  images = [img1, img2, img3, img4], 
+  images = [img1, img2, img3, img4],
   left = "SMART",
   right = "COACH360",
-  splitAtMs = 1000, // when the word splits open, counted from mount
-  switchMs = 200, // image switch speed
-  cycles = 3, // how many times to loop the images before finishing
-  // "360" takes the colour at the same index as the current image. Pick colours
-  // that match your images (one per image; it repeats if there are fewer).
- accentColors = ["#C4A7E7","#9B6FD3","#7B52B5","#5B3FD1","#3A236B",],
+  splitAtMs = 1000,
+  switchMs = 200,
+  cycles = 3,
+  accentColors = ["#C4A7E7", "#9B6FD3", "#7B52B5", "#5B3FD1", "#3A236B"],
   accentText = "360",
   onFinish,
 }) {
@@ -87,27 +82,27 @@ export default function SmartCoachLoader({
   const slides = images.length ? images : FALLBACK;
 
   const [expanded, setExpanded] = useState(false);
-  const [opened, setOpened] = useState(false); // opening animation finished
+  const [opened, setOpened] = useState(false);
   const [index, setIndex] = useState(0);
   const [visible, setVisible] = useState(true);
   const accentColor = opened || expanded ? accentColors[index % accentColors.length] : undefined;
   const ticks = useRef(0);
 
-  // Preload every image so the hard cuts never flash an empty frame.
   useEffect(() => {
     slides.forEach((src) => {
       const img = new Image();
       img.src = src;
     });
+    // preload the mask too, so the logo shape is ready when the slot fades in
+    const m = new Image();
+    m.src = logoMask;
   }, [slides]);
 
-  // Step 2 -> 3: hold the finished word, then split it.
   useEffect(() => {
     const t = setTimeout(() => setExpanded(true), reduce ? 0 : splitAtMs);
     return () => clearTimeout(t);
   }, [splitAtMs, reduce]);
 
-  // After the gap has opened and the slot has faded in, start switching images.
   useEffect(() => {
     if (!expanded) return;
     const openTimer = setTimeout(() => setOpened(true), reduce ? 0 : 700);
@@ -142,15 +137,11 @@ export default function SmartCoachLoader({
         >
           <div
             className="flex items-center font-space justify-center whitespace-nowrap font-medium tracking-[0.01em] text-[#0a0a0a]"
-            style={{
-              fontSize: "clamp(1.6rem, 7.2vw, 7.5rem)",
-              
-            }}
+            style={{ fontSize: "clamp(1.6rem, 7.2vw, 7.5rem)" }}
           >
             <Letters text={left} reduce={reduce} />
 
-            {/* Empty gap that opens first, then the slot fades in inside it.
-                */}
+            {/* Gap opens first, then the logo-shaped window fades in inside it. */}
             <motion.div
               className="relative shrink-0"
               style={{ height: `${SLOT_H}em` }}
@@ -164,8 +155,10 @@ export default function SmartCoachLoader({
                 ease: IN_OUT,
               }}
             >
+              {/* The mask lives on this wrapper, so images are clipped to the logo shape */}
               <motion.div
                 className="absolute inset-0 overflow-hidden bg-black"
+                style={LOGO_MASK_STYLE}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: expanded ? 1 : 0 }}
                 transition={{
