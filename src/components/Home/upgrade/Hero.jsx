@@ -72,10 +72,10 @@ const OPP_NEW_TEXT = 'Scale faster with less effort';
 // imports (e.g. import img1 from '.../clients.jpg') — portrait ~900x1000.
 const OPP_WORDS = ['Effortless', 'Scalable', 'Smart', 'Growth'];
 const OPP_IMAGES = [
-  'https://picsum.photos/seed/coach-effortless/900/1000', // Effortless
-  'https://picsum.photos/seed/coach-scalable/900/1000', // Scalable
-  'https://picsum.photos/seed/coach-smart/900/1000', // Smart
-  'https://picsum.photos/seed/coach-growth/900/1000', // Growth
+  'https://res.cloudinary.com/q1vba78b/image/upload/v1791798216/imgh1_dmjulg.jpg', // Effortless
+  'https://res.cloudinary.com/q1vba78b/image/upload/v1791798207/imgh2_zsetmt.jpg', // Scalable
+  'https://res.cloudinary.com/q1vba78b/image/upload/v1791798205/imgh3_hi9dod.jpg', // Smart
+  'https://res.cloudinary.com/q1vba78b/image/upload/v1791798720/growth_gcvxpl.avif', // Growth
 ];
 
 // Title 1 is drawn twice (white over the video, black under it), so its markup
