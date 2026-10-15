@@ -48,7 +48,8 @@ const focusDark =
 const focusLight =
   "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0A0A0A] focus-visible:ring-offset-2 focus-visible:ring-offset-white";
 
-
+// Hide secondary copy on very short screens so everything still fits without scrolling.
+const SHORT = "[@media(max-height:640px)]:hidden";
 
 function MenuPanel({ open, onClose, path, firstLinkRef }) {
   // staggered entrance, replays every time the panel opens.
@@ -64,6 +65,19 @@ function MenuPanel({ open, onClose, path, firstLinkRef }) {
         @keyframes menuIn { from { opacity: 0; transform: translateY(26px); } to { opacity: 1; transform: none; } }
         .menu-row { transition: opacity 300ms ease; }
         .menu-list:hover .menu-row:not(:hover):not(:focus-visible) { opacity: 0.4; }
+
+        /* Link size: compact on phones/tablets, large editorial type on desktop. */
+        .menu-link-text { font-size: clamp(1.2rem, 3.9dvh, 1.9rem); }
+        @media (min-width: 1024px) {
+          .menu-link-text { font-size: clamp(2rem, 6.4dvh, 4.25rem); }
+        }
+
+        /* Mobile: no visible scrollbar (content is sized to fit; scroll is only a safety net). */
+        @media (max-width: 1023px) {
+          .menu-scroll { scrollbar-width: none; }
+          .menu-scroll::-webkit-scrollbar { display: none; }
+        }
+
         @media (prefers-reduced-motion: reduce) {
           .menu-panel { transition: none !important; }
           .menu-anim { animation: none !important; }
@@ -83,10 +97,10 @@ function MenuPanel({ open, onClose, path, firstLinkRef }) {
         aria-modal="true"
         aria-label="Site menu"
         aria-hidden={!open}
-        className={`menu-panel fixed inset-3 z-[295] overflow-hidden rounded-[32px] text-white shadow-[0_30px_80px_rgba(0,0,0,0.55)] ring-1 ring-white/10 ${open ? "visible" : "invisible"}`}
+        className={`menu-panel fixed inset-2 z-[295] overflow-hidden rounded-[24px] text-white shadow-[0_30px_80px_rgba(0,0,0,0.55)] ring-1 ring-white/10 sm:inset-3 sm:rounded-[32px] ${open ? "visible" : "invisible"}`}
         style={{
           background: `linear-gradient(155deg, #1C1C1C 0%, ${BLACK} 55%, #000000 100%)`,
-          clipPath: open ? "inset(0% 0% 0% 0% round 32px)" : "inset(0% 0% 100% 0% round 32px)",
+          clipPath: open ? "inset(0% 0% 0% 0% round 28px)" : "inset(0% 0% 100% 0% round 28px)",
           transition: "clip-path 650ms cubic-bezier(0.76, 0, 0.24, 1), visibility 650ms",
         }}
       >
@@ -94,10 +108,10 @@ function MenuPanel({ open, onClose, path, firstLinkRef }) {
         <span aria-hidden="true" className="pointer-events-none absolute -right-24 -top-32 h-[26rem] w-[26rem] rounded-full bg-white/[0.07] blur-3xl" />
         <span aria-hidden="true" className="pointer-events-none absolute -bottom-40 -left-24 h-[22rem] w-[22rem] rounded-full bg-white/[0.04] blur-3xl" />
 
-        <div className="relative h-full overflow-y-auto overscroll-contain px-5 pb-6 pt-24 sm:px-8 lg:px-12 lg:pb-10 lg:pt-28">
-          <div className="mx-auto grid min-h-full max-w-[1240px] gap-8 lg:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)] lg:gap-14">
+        <div className="menu-scroll relative h-full overflow-y-auto overscroll-contain px-4 pb-4 pt-[4.5rem] sm:px-8 sm:pb-6 sm:pt-24 lg:px-12 lg:pb-10 lg:pt-28">
+          <div className="mx-auto flex h-full max-w-[1240px] flex-col gap-3 lg:grid lg:h-auto lg:min-h-full lg:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)] lg:gap-14">
             {/* ── Page links ── */}
-            <nav aria-label="Site" className="menu-list flex flex-col border-b border-white/12">
+            <nav aria-label="Site" className="menu-list flex min-h-0 flex-1 flex-col border-b border-white/12">
               {NAV_LINKS.map((l, i) => {
                 const active = on(path, l.route);
                 return (
@@ -108,21 +122,18 @@ function MenuPanel({ open, onClose, path, firstLinkRef }) {
                     onClick={onClose}
                     tabIndex={tab}
                     aria-current={active ? "page" : undefined}
-                    className={`menu-row menu-anim group flex flex-1 items-center justify-between gap-6 border-t border-white/12 py-3 lg:min-h-[72px] ${focusDark}`}
+                    className={`menu-row menu-anim group flex min-h-0 flex-1 items-center justify-between gap-4 border-t border-white/12 py-1 lg:min-h-[72px] lg:gap-6 lg:py-3 ${focusDark}`}
                     style={enter(i)}
                   >
-                    <span
-                      className="flex items-center gap-3 font-[Poppins] font-semibold leading-none tracking-tight transition-transform duration-300 group-hover:translate-x-2"
-                      style={{ fontSize: "clamp(2rem, 6.4dvh, 4.25rem)" }}
-                    >
-                      {active && <span aria-hidden="true" className="h-3 w-3 flex-shrink-0 rounded-full bg-white" />}
+                    <span className="menu-link-text flex items-center gap-2.5 font-[Poppins] font-semibold leading-none tracking-tight transition-transform duration-300 group-hover:translate-x-2 lg:gap-3">
+                      {active && <span aria-hidden="true" className="h-2 w-2 flex-shrink-0 rounded-full bg-white lg:h-3 lg:w-3" />}
                       <span>{l.label}</span>
                     </span>
 
                     <span className="flex items-center gap-5">
                       <span className="hidden max-w-[15rem] text-right font-[Poppins] text-sm leading-snug text-white/45 xl:block">{l.desc}</span>
-                      <span className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-full border border-white/20 text-white transition-all duration-300 group-hover:border-transparent group-hover:bg-white group-hover:text-black">
-                        <Arrow size={15} />
+                      <span className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full border border-white/20 text-white transition-all duration-300 group-hover:border-transparent group-hover:bg-white group-hover:text-black lg:h-11 lg:w-11">
+                        <Arrow size={13} />
                       </span>
                     </span>
                   </Link>
@@ -131,13 +142,13 @@ function MenuPanel({ open, onClose, path, firstLinkRef }) {
             </nav>
 
             {/* ── Resources + demo card ── */}
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-shrink-0 flex-col gap-2.5 lg:flex-shrink lg:gap-4">
               <section
                 aria-labelledby="menu-resources"
-                className="menu-anim rounded-[26px] bg-white/[0.06] p-2.5 ring-1 ring-white/10 sm:p-3"
+                className="menu-anim rounded-[18px] bg-white/[0.06] p-1.5 ring-1 ring-white/10 sm:p-2.5 lg:rounded-[26px] lg:p-3"
                 style={enter(NAV_LINKS.length)}
               >
-                <h2 id="menu-resources" className="px-3.5 pb-2 pt-3 font-[Poppins] text-sm font-medium text-white/55">
+                <h2 id="menu-resources" className="px-2.5 pb-1 pt-1.5 font-[Poppins] text-[11px] font-medium text-white/55 lg:px-3.5 lg:pb-2 lg:pt-3 lg:text-sm">
                   Resources
                 </h2>
                 <ul className="flex flex-col">
@@ -150,15 +161,15 @@ function MenuPanel({ open, onClose, path, firstLinkRef }) {
                           onClick={onClose}
                           tabIndex={tab}
                           aria-current={active ? "page" : undefined}
-                          className={`group flex items-center gap-4 rounded-2xl px-3.5 py-3 transition-colors hover:bg-white/10 ${active ? "bg-white/10" : ""} ${focusDark}`}
+                          className={`group flex items-center gap-3 rounded-xl px-2.5 py-1.5 transition-colors hover:bg-white/10 lg:gap-4 lg:rounded-2xl lg:px-3.5 lg:py-3 ${active ? "bg-white/10" : ""} ${focusDark}`}
                         >
-                          <span className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-white text-black">{r.icon}</span>
+                          <span className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-white text-black lg:h-10 lg:w-10">{r.icon}</span>
                           <span className="flex min-w-0 flex-1 flex-col leading-tight">
-                            <span className="font-[Poppins] text-base font-medium">{r.label}</span>
-                            <span className="mt-0.5 font-[Poppins] text-[13px] text-white/55">{r.desc}</span>
+                            <span className="font-[Poppins] text-[13px] font-medium lg:text-base">{r.label}</span>
+                            <span className={`mt-0.5 font-[Poppins] text-[11px] text-white/55 lg:text-[13px] ${SHORT} lg:!block`}>{r.desc}</span>
                           </span>
                           <span className="text-white/40 transition-all duration-300 group-hover:translate-x-1 group-hover:text-white">
-                            <Arrow size={15} />
+                            <Arrow size={13} />
                           </span>
                         </Link>
                       </li>
@@ -168,34 +179,34 @@ function MenuPanel({ open, onClose, path, firstLinkRef }) {
               </section>
 
               <div
-                className="menu-anim relative overflow-hidden rounded-[26px] bg-white p-6 text-black sm:p-7 lg:mt-auto"
+                className="menu-anim relative overflow-hidden rounded-[18px] bg-white p-4 text-black sm:p-5 lg:mt-auto lg:rounded-[26px] lg:p-7"
                 style={enter(NAV_LINKS.length + 1)}
               >
-                <p className="relative max-w-[18rem] font-[Poppins] text-2xl font-semibold leading-tight tracking-tight">
+                <p className="relative max-w-[18rem] font-[Poppins] text-[15px] font-semibold leading-tight tracking-tight lg:text-2xl">
                   See it with your own coaching business
                 </p>
-                <p className="relative mt-2 max-w-[20rem] font-[Poppins] text-sm text-black/65">
+                <p className={`relative mt-1.5 max-w-[20rem] font-[Poppins] text-[11.5px] text-black/65 lg:mt-2 lg:text-sm ${SHORT} lg:!block`}>
                   Book a demo and we'll show you how it fits the way you coach.
                 </p>
-                <div className="relative mt-6 flex flex-wrap items-center gap-x-5 gap-y-3">
+                <div className="relative mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 lg:mt-6 lg:gap-x-5 lg:gap-y-3">
                   <a
                     href={DEMO_URL}
                     target="_blank"
                     rel="noopener noreferrer"
                     onClick={onClose}
                     tabIndex={tab}
-                    className={`group inline-flex items-center gap-3 rounded-full bg-black py-1.5 pl-6 pr-1.5 font-[Poppins] text-[15px] font-semibold text-white transition-shadow hover:shadow-[0_10px_30px_rgba(0,0,0,0.35)] ${focusLight}`}
+                    className={`group inline-flex items-center gap-2.5 rounded-full bg-black py-1 pl-5 pr-1 font-[Poppins] text-[13px] font-semibold text-white transition-shadow hover:shadow-[0_10px_30px_rgba(0,0,0,0.35)] lg:gap-3 lg:py-1.5 lg:pl-6 lg:pr-1.5 lg:text-[15px] ${focusLight}`}
                   >
                     Book a demo
-                    <span className="flex h-9 w-9 items-center justify-center rounded-full bg-white text-black transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-rotate-45">
-                      <Arrow />
+                    <span className="flex h-8 w-8 items-center justify-center rounded-full bg-white text-black transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-rotate-45 lg:h-9 lg:w-9">
+                      <Arrow size={14} />
                     </span>
                   </a>
                   <Link
                     to="/contact-us"
                     onClick={onClose}
                     tabIndex={tab}
-                    className={`rounded-full px-1 py-1 font-[Poppins] text-sm font-medium underline underline-offset-4 ${focusLight}`}
+                    className={`rounded-full px-1 py-1 font-[Poppins] text-[12.5px] font-medium underline underline-offset-4 lg:text-sm ${focusLight}`}
                   >
                     Contact us
                   </Link>
@@ -256,28 +267,28 @@ export default function Navbar() {
 
   return (
     <>
-      <header className="pointer-events-none fixed inset-x-0 top-0 z-[300] flex items-center justify-between px-3 pt-3 sm:px-6 sm:pt-5">
+      <header className="pointer-events-none fixed inset-x-0 top-0 z-[300] flex items-center justify-between px-2 pt-2 sm:px-6 sm:pt-5">
         {/* Logo pill */}
         <Link
           to="/"
           aria-label="smartcoach360.ai home"
-          className={`pointer-events-auto flex items-center gap-2 p-1.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white ${pill}`}
+          className={`pointer-events-auto flex items-center gap-2 p-1 sm:p-1.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white ${pill}`}
         >
-          <span className="flex h-9 w-9 items-center justify-center rounded-full bg-white">
-            <img src={logo} alt="" className="h-5 w-5 object-contain" />
+          <span className="flex h-8 w-8 items-center justify-center rounded-full bg-white sm:h-9 sm:w-9">
+            <img src={logo} alt="" className="h-[18px] w-[18px] object-contain sm:h-5 sm:w-5" />
           </span>
           <span
             className={`flex items-baseline overflow-hidden whitespace-nowrap font-[Poppins] transition-all duration-500 ease-out motion-reduce:transition-none ${
-              compact ? "max-w-0 opacity-0" : "max-w-[220px] pl-1 pr-3 opacity-100"
+              compact ? "max-w-0 opacity-0" : "max-w-[220px] pl-0.5 pr-2.5 opacity-100 sm:pl-1 sm:pr-3"
             }`}
           >
-            <span className="text-[17px] font-bold leading-none tracking-[-0.4px]">smartcoach360</span>
-            <span className="ml-0.5 text-[12px] leading-none text-white/60">.ai</span>
+            <span className="text-[14px] font-bold leading-none tracking-[-0.4px] sm:text-[17px]">smartcoach360</span>
+            <span className="ml-0.5 text-[10.5px] leading-none text-white/60 sm:text-[12px]">.ai</span>
           </span>
         </Link>
 
         {/* Actions pill */}
-        <div className={`pointer-events-auto flex items-center gap-1 p-1.5 ${pill}`}>
+        <div className={`pointer-events-auto flex items-center gap-1 p-1 sm:p-1.5 ${pill}`}>
           <a
             href={DEMO_URL}
             target="_blank"
@@ -294,11 +305,11 @@ export default function Navbar() {
             aria-label={open ? "Close menu" : "Open menu"}
             aria-expanded={open}
             aria-controls="site-menu"
-            className="group flex items-center gap-2.5 rounded-full py-2 pl-4 pr-2 font-[Poppins] text-[14.5px] font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
+            className="group flex items-center gap-2 rounded-full py-1.5 pl-3.5 pr-1.5 font-[Poppins] text-[13px] font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white sm:gap-2.5 sm:py-2 sm:pl-4 sm:pr-2 sm:text-[14.5px]"
             style={{ background: VIOLET }}
           >
             {open ? "Close" : "Menu"}
-            <span className="flex h-7 w-7 flex-col items-center justify-center gap-[4px] rounded-full bg-white/20 transition-colors group-hover:bg-white/30">
+            <span className="flex h-6 w-6 flex-col items-center justify-center gap-[4px] rounded-full bg-white/20 transition-colors group-hover:bg-white/30 sm:h-7 sm:w-7">
               <span
                 className={`block h-[2px] rounded-full bg-white transition-all duration-300 ${
                   open ? "w-3.5 translate-y-[3px] rotate-45" : "w-3 group-hover:w-3.5"

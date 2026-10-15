@@ -984,7 +984,7 @@ const cldUrl = (seed, width, ar) =>
                 Stage 8 headline can size itself in cqw (relative to the box). */}
             <div
               ref={oppBoxRef}
-              className="relative h-[min(34rem,64vh)] w-[44vw] max-w-[22rem] will-change-transform sm:w-[min(22rem,28vw)] [container-type:inline-size]"
+              className="relative h-[min(34rem,64vh)] w-[60vw] max-w-[22rem] will-change-transform sm:w-[min(22rem,28vw)] [container-type:inline-size]"
             >
               {/* solid light card */}
               <div data-fill className="absolute inset-0 rounded-[4px]" style={{ background: PAPER }} />
